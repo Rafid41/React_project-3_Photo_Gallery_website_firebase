@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { authCheck } from "../redux/authActionCreators";
 import Logout from "./Auth/Logout";
 import { Home } from "./BodyComponent/Home";
+import Album from "./BodyComponent/Album";
 
 const mapStateToProps = (state) => {
     return {
@@ -46,6 +47,7 @@ class Main extends Component {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/logout" element={<Logout />} />
+                    <Route path="/album" element={<Album />} />
                     {/* kono kisur sathe match na hole "/" */}
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>

@@ -31,7 +31,12 @@ const Header = (props) => {
             <Nav className="mr-md-5">
                 <NavItem>
                     <NavLink to="/" className="NavLink">
-                        Photo Gallery
+                        All Photos
+                    </NavLink>
+                </NavItem>
+                <NavItem>
+                    <NavLink to="/album" className="NavLink">
+                        Albums
                     </NavLink>
                 </NavItem>
                 <NavItem className="ml-auto">
