@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { storage } from "../firebase/firebase";
+import { storage } from "../../firebase/firebase";
 import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
 
@@ -13,7 +13,7 @@ function if_image(name) {
     return s === "jpg" || s === "png" || s === "jpeg";
 }
 
-const Home = () => {
+export const Home = () => {
     let init_size;
     const [imageUpload, setImageUpload] = useState(null);
     const [imageList, setImageList] = useState(new Set());
@@ -40,21 +40,22 @@ const Home = () => {
         });
     };
 
-    function refresh(){
+    function refresh() {
         listAll(imageListRef).then((response) => {
-                    const uniqueUrls = new Set(imageList);
-        
-                    response.items.forEach((item) => {
-                        getDownloadURL(item).then((url) => {
-                            setImageList((prev) => [...prev, url]);
-                            // uniqueUrls.add(url);
-                        });
-                    });
-        
-                    // setImageList(uniqueUrls);
+            const uniqueUrls = new Set(imageList);
+
+            response.items.forEach((item) => {
+                getDownloadURL(item).then((url) => {
+                    setImageList((prev) => [...prev, url]);
+                    // uniqueUrls.add(url);
                 });
+            });
+
+            // setImageList(uniqueUrls);
+        });
     }
 
+    // disploy er age refresh er bodole eta dite hbe
     // useEffect(() => {
     //     listAll(imageListRef).then((response) => {
     //         const uniqueUrls = new Set(imageList);
@@ -73,17 +74,17 @@ const Home = () => {
     // setImageList to set
     const ListsOfImageList = new Set(imageList);
     // Convert the Set to an array and sort it
-    const sortedArray = Array.from(ListsOfImageList);
+    const sortedImgArray = Array.from(ListsOfImageList);
 
     // Create a new Set from the sorted array
-    sortedArray.sort();
+    //sortedImgArray.sort();
 
     //size of sorted array
-    let size = sortedArray.length;
+    let size = sortedImgArray.length;
 
-     let form = (
-         <div>
-             <input
+    let form = (
+        <div>
+            <input
                 type="file"
                 onChange={(event) => {
                     setImageUpload(event.target.files[0]);
@@ -91,33 +92,25 @@ const Home = () => {
             />
             <button onClick={uploadImage} className="btn btn-primary">
                 Upload Image
-             </button>
-             <button onClick={refresh} className="btn btn-primary">
+            </button>
+            <button onClick={refresh} className="btn btn-primary">
                 Refresh Page
             </button>
             <hr />
             <hr />
             <div className="img_div">
-                {Array.from(sortedArray).map((url) => {
-                    return <img key={url} src={url} alt="Uploaded" />
+                {Array.from(sortedImgArray).map((url) => {
+                    return <img key={url} src={url} alt="Uploaded" />;
                 })}
             </div>
         </div>
     );
-    
-    if (sortedArray.length != init_size) {
-        init_size = sortedArray.length;
-        console.log(sortedArray.length);
-        return (
-            <div className="App">
-                {form}
-            </div>
-        );
-    }
-    
 
-    
+    if (sortedImgArray.length != init_size) {
+        init_size = sortedImgArray.length;
+        console.log(sortedImgArray.length);
+        return <div className="App">{form}</div>;
+    }
 };
 
-
-export default Home;
+export const sortedImgArray = Home.sortedImgArray;

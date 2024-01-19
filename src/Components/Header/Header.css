@@ -1,0 +1,23 @@
+/* src\Components\Header\Header.css */
+
+.Navigation {
+    margin-bottom: 20px;
+}
+
+.Brand {
+    color: white;
+    font-size: 15px;
+    margin-top: -20px;
+}
+
+.NavLink {
+    text-decoration: none;
+    color: white;
+    font-size: 25px;
+    margin-top: -25px;
+    margin-right: 15px;
+}
+
+.NavLink:hover {
+    color: wheat;
+}
