@@ -1,6 +1,7 @@
 // src\redux\authActionCreators.js
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
+import { getDatabase, ref, set } from "firebase/database";
 
 //  eta dispatch hbe jokhn kono response ashbe firebase theke, means login/signUp hole
 //  nicher auth fn theke dis[atch hye kehane ashbe, erpor reducer.js e jabe]
@@ -29,7 +30,7 @@ export const authFailed = (errMsg) => {
     };
 };
 
-export const auth = (email, password, mode) => (dispatch) => {
+export const auth = (username, email, password, mode) => (dispatch) => {
     dispatch(authLoading(true)); // true ta payLoad hisebe pass hbe
 
     const authData = {
@@ -50,6 +51,7 @@ export const auth = (email, password, mode) => (dispatch) => {
     // post link collected from: https://firebase.google.com/docs/reference/rest/auth
     // this is default link for post
     // API key from Firebase -> settings -> project settings-> web API Key
+    let error = false;
     const API_KEY = "AIzaSyBrZUeuqhadwkIwIZAKHBy9s3LQ3y6UiaQ";
     axios
         .post(authUrl + API_KEY, authData)
@@ -72,7 +74,17 @@ export const auth = (email, password, mode) => (dispatch) => {
         .catch((err) => {
             dispatch(authLoading(false));
             dispatch(authFailed(err.response.data.error.message));
+            error = true;
         });
+
+    //store in credentials table
+    if (error == false) {
+        const db = getDatabase();
+        set(ref(db, "Credentials/"), {
+            email: email,
+            username: username,
+        });
+    }
 };
 
 //auto logout actions for auth token

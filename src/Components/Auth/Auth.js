@@ -9,7 +9,7 @@ import { Alert } from "reactstrap";
 // eta authActionCreators e dispatch korbe
 const mapDispatchToProps = (dispatch) => {
     return {
-        auth: (email, password, mode) => dispatch(auth(email, password, mode)),
+        auth: (username, email, password, mode) => dispatch(auth(username, email, password, mode)),
     };
 };
 
@@ -46,6 +46,7 @@ class Auth extends Component {
                     initialValues={
                         // j field gulo thakbe auth page e
                         {
+                            username: "",
                             email: "",
                             password: "",
                             passwordConfirm: "",
@@ -53,6 +54,7 @@ class Auth extends Component {
                     }
                     onSubmit={(values) => {
                         this.props.auth(
+                            values.username,
                             values.email,
                             values.password,
                             this.state.mode
@@ -63,6 +65,9 @@ class Auth extends Component {
                     // validation check failed hole r shamne agabe na
                     validate={(values) => {
                         const errors = {};
+                        if (!values.username) {
+                            errors.username = "Required";
+                        }
                         // empty kina
                         if (!values.email) {
                             errors.email = "Required";
@@ -131,6 +136,20 @@ class Auth extends Component {
                             <br />
                             <form onSubmit={handleSubmit}>
                                 {/* field "name" will be same as initialValues field_names */}
+                                <input
+                                    name="username"
+                                    placeholder="Enter Username"
+                                    className="form-control"
+                                    value={values.username}
+                                    onChange={handleChange}
+                                />
+                                <span style={{ color: "red" }}>
+                                    {errors.username}
+                                </span>
+
+                                <br />
+
+
                                 <input
                                     name="email"
                                     placeholder="Enter Your Email"
