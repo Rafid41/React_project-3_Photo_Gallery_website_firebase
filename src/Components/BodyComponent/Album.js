@@ -41,14 +41,6 @@ class Album extends React.Component {
         return (
             <div>
                 <div>
-                    <Button
-                        active
-                        block
-                        color="info"
-                        onClick={this.toggleModal}
-                    >
-                        Add New Album
-                    </Button>
                     <Modal isOpen={this.state.modalOpen}>
                         <ModalBody>{<AddNewAlbumForm />}</ModalBody>
 
@@ -62,12 +54,20 @@ class Album extends React.Component {
                             </button>
                         </ModalFooter>
                     </Modal>
-                    <br />
-                    <br />
+
                     <center>
                         <h2>Current Albums</h2>
+                        <br />
                         <CurrentAlbumLists />
                     </center>
+                    <button
+                        className="addNewAlbumButton"
+                        active
+                        color="info"
+                        onClick={this.toggleModal}
+                    >
+                        Add New Album
+                    </button>
                 </div>
             </div>
         );

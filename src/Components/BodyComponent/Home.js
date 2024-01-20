@@ -1,30 +1,65 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 import { storage } from "../../firebase/firebase";
 import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import "../../App.css";
+import { Modal, ModalBody, ModalFooter } from "reactstrap";
+import {
+    getDatabase,
+    set,
+    ref as ref_data,
+    onValue,
+    child,
+    get,
+} from "firebase/database";
 
-// image or not
-function if_image(name) {
-    var s = "";
-    for (let i = name.length - 1; i >= 0; i--) {
-        if (name[i] === ".") break;
-        s = name[i] + s;
+class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            imageUpload: null,
+            imageList: new Set(),
+            modalOpen: false,
+            pic_id: 0,
+            refresh_screen: false,
+        };
+        this.imageListRef = ref(storage, "images/");
     }
-    return s === "jpg" || s === "png" || s === "jpeg";
-}
 
-export const Home = () => {
-    let init_size;
-    const [imageUpload, setImageUpload] = useState(null);
-    const [imageList, setImageList] = useState(new Set());
+    //======================== firebase =================//
+    // post to firebase
+    pictureUrlToFirebase(pic_Url) {
+        const db = getDatabase();
+        set(ref_data(db, "Picture_Urls/" + this.state.pic_id), {
+            url: pic_Url,
+        });
+        this.setState({ ALert_album_added: true });
+    }
 
-    const imageListRef = ref(storage, "images/");
+    //================== modal======================//
+    toggleModal = () => {
+        this.setState({
+            modalOpen: !this.state.modalOpen,
+        });
+    };
 
-    const uploadImage = () => {
+    // image or not
+    if_image(name) {
+        var s = "";
+        for (let i = name.length - 1; i >= 0; i--) {
+            if (name[i] === ".") break;
+            s = name[i] + s;
+        }
+        return s === "jpg" || s === "png" || s === "jpeg";
+    }
+
+    uploadImage = () => {
+        const { imageUpload, imageList } = this.state;
+
         if (imageUpload == null) return;
 
         // image or not
-        if (!if_image(imageUpload.name)) {
+        if (!this.if_image(imageUpload.name)) {
             alert("Supported formats: jpg, png, and jpeg");
             return;
         }
@@ -34,83 +69,104 @@ export const Home = () => {
 
         uploadBytes(imageRef, imageUpload).then((snapshot) => {
             getDownloadURL(snapshot.ref).then((url) => {
-                setImageList((prev) => new Set([...prev, url]));
+                this.setState((prevState) => ({
+                    imageList: new Set([...prevState.imageList, url]),
+                }));
                 alert("Image Uploaded");
+                this.pictureUrlToFirebase(url);
             });
         });
     };
 
-    function refresh() {
-        listAll(imageListRef).then((response) => {
+    refresh = () => {
+        const { imageList } = this.state;
+        this.setState({ refresh_screen: true });
+
+        listAll(this.imageListRef).then((response) => {
             const uniqueUrls = new Set(imageList);
 
             response.items.forEach((item) => {
                 getDownloadURL(item).then((url) => {
-                    setImageList((prev) => [...prev, url]);
-                    // uniqueUrls.add(url);
+                    this.setState((prevState) => ({
+                        imageList: new Set([...prevState.imageList, url]),
+                    }));
                 });
             });
-
-            // setImageList(uniqueUrls);
         });
+    };
+    update_pic_id(len) {
+        if (this.state.pic_id != len) {
+            this.setState({ pic_id: len });
+        }
     }
 
-    // disploy er age refresh er bodole eta dite hbe
-    // useEffect(() => {
-    //     listAll(imageListRef).then((response) => {
-    //         const uniqueUrls = new Set(imageList);
+    render() {
+        if (this.state.refresh_screen == false) {
+            this.refresh();
+        }
+        const { imageList } = this.state;
+        var i = 0;
+        console.log(i);
 
-    //         response.items.forEach((item) => {
-    //             getDownloadURL(item).then((url) => {
-    //                 setImageList((prev) => [...prev, url]);
-    //                 // uniqueUrls.add(url);
-    //             });
-    //         });
+        // setImageList to set
+        const ListsOfImageList = new Set(imageList);
+        // Convert the Set to an array and sort it
+        const sortedImgArray = Array.from(ListsOfImageList);
+        // this.setState({ pic_ids: sortedImgArray.length });
+        this.update_pic_id(sortedImgArray.length);
 
-    //         // setImageList(uniqueUrls);
-    //     });
-    // }, []);
+        return (
+            <div className="App">
+                <button onClick={this.refresh} className="btn btn-primary">
+                    Refresh Page
+                </button>
+                <hr />
+                <hr />
+                <div className="img_div">
+                    {sortedImgArray.map((url) => (
+                        <img key={url} src={url} alt="Uploaded" />
+                    ))}
+                </div>
+                {/* ================= modal =================== */}
+                <Modal isOpen={this.state.modalOpen}>
+                    <ModalBody>
+                        <input
+                            type="file"
+                            onChange={(event) => {
+                                this.setState({
+                                    imageUpload: event.target.files[0],
+                                });
+                            }}
+                        />
+                        <button
+                            onClick={this.uploadImage}
+                            className="btn btn-primary"
+                        >
+                            Upload Image
+                        </button>
+                    </ModalBody>
 
-    // setImageList to set
-    const ListsOfImageList = new Set(imageList);
-    // Convert the Set to an array and sort it
-    const sortedImgArray = Array.from(ListsOfImageList);
-
-    // Create a new Set from the sorted array
-    //sortedImgArray.sort();
-
-    //size of sorted array
-    let size = sortedImgArray.length;
-
-    let form = (
-        <div>
-            <input
-                type="file"
-                onChange={(event) => {
-                    setImageUpload(event.target.files[0]);
-                }}
-            />
-            <button onClick={uploadImage} className="btn btn-primary">
-                Upload Image
-            </button>
-            <button onClick={refresh} className="btn btn-primary">
-                Refresh Page
-            </button>
-            <hr />
-            <hr />
-            <div className="img_div">
-                {Array.from(sortedImgArray).map((url) => {
-                    return <img key={url} src={url} alt="Uploaded" />;
-                })}
+                    {/* close button */}
+                    <ModalFooter>
+                        <button
+                            className="btn btn-primary"
+                            onClick={this.toggleModal}
+                        >
+                            Close
+                        </button>
+                    </ModalFooter>
+                </Modal>
+                <button
+                    className="addNewAlbumButton"
+                    active
+                    color="info"
+                    onClick={this.toggleModal}
+                >
+                    Upload Picture
+                </button>
             </div>
-        </div>
-    );
-
-    if (sortedImgArray.length != init_size) {
-        init_size = sortedImgArray.length;
-        console.log(sortedImgArray.length);
-        return <div className="App">{form}</div>;
+        );
     }
-};
+}
 
-export const sortedImgArray = Home.sortedImgArray;
+export default Home;

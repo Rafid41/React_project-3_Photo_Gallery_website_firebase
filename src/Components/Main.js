@@ -6,7 +6,7 @@ import Auth from "./Auth/Auth";
 import { connect } from "react-redux";
 import { authCheck } from "../redux/authActionCreators";
 import Logout from "./Auth/Logout";
-import { Home } from "./BodyComponent/Home";
+import Home from "./BodyComponent/Home";
 import Album from "./BodyComponent/Album";
 
 const mapStateToProps = (state) => {
@@ -22,7 +22,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class Main extends Component {
-
     componentDidMount() {
         //  check j login token diye auto login korte parbe kina
         this.props.authCheck();
