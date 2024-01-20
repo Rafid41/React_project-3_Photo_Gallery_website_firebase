@@ -117,11 +117,13 @@ class Home extends Component {
 
         return (
             <div className="App">
-                <button onClick={this.refresh} className="btn btn-primary">
+                {/* <button onClick={this.refresh} className="btn btn-primary">
                     Refresh Page
                 </button>
                 <hr />
-                <hr />
+                <hr /> */}
+
+                <h2>All Pictures</h2>
                 <div className="img_div">
                     {sortedImgArray.map((url) => (
                         <img key={url} src={url} alt="Uploaded" />

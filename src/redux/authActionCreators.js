@@ -78,9 +78,12 @@ export const auth = (username, email, password, mode) => (dispatch) => {
         });
 
     //store in credentials table
-    if (error == false) {
+    if (error == false && mode === "Sign Up") {
         const db = getDatabase();
-        set(ref(db, "Credentials/"), {
+        // seconds will be unique user ID
+        var seconds = new Date().getTime();
+        console.log(seconds);
+        set(ref(db, "Credentials/" + seconds), {
             email: email,
             username: username,
         });
