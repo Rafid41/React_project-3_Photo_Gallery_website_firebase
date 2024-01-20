@@ -2,6 +2,8 @@
 import React from "react";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import AddNewAlbumForm from "./AddNewAlbumForm";
+import CurrentAlbumLists from "./CurrentAlbumLists";
+import "../../App.css";
 
 class Album extends React.Component {
     // class component e useState() use kora jayna
@@ -48,7 +50,7 @@ class Album extends React.Component {
                         Add New Album
                     </Button>
                     <Modal isOpen={this.state.modalOpen}>
-                        <ModalBody>{ <AddNewAlbumForm/>}</ModalBody>
+                        <ModalBody>{<AddNewAlbumForm />}</ModalBody>
 
                         {/* close button */}
                         <ModalFooter>
@@ -60,6 +62,12 @@ class Album extends React.Component {
                             </button>
                         </ModalFooter>
                     </Modal>
+                    <br />
+                    <br />
+                    <center>
+                        <h2>Current Albums</h2>
+                        <CurrentAlbumLists />
+                    </center>
                 </div>
             </div>
         );
