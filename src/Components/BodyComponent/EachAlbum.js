@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import "../../App.css";
 import { Modal, ModalBody, ModalFooter } from "reactstrap";
 import Add_Pictures_to_album from "./EachAlbum_Subfolders/Add_Pictures_to_album";
+import ViewAlbum from "./EachAlbum_Subfolders/ViewAlbum";
 
 const EachAlbum = () => {
     // ==========modal state and function ===========//
@@ -33,13 +34,14 @@ const EachAlbum = () => {
                 </ModalFooter>
             </Modal>
 
-            {/* ================== album============ */}
+            {/* ================== album ============ */}
             <center>
                 <h2>Album: {categoryName}</h2>
                 <br />
+                <ViewAlbum categoryName={categoryName} />
             </center>
 
-            {/* ===================== modal open button================ */}
+            {/* ===================== modal open button ================ */}
             <button
                 className="addNewAlbumButton"
                 active

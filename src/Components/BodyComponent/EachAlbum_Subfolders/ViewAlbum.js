@@ -1,3 +1,4 @@
+// src\Components\BodyComponent\EachAlbum_Subfolders\ViewAlbum.js
 import React, { Component } from "react";
 import {
     getDatabase,
@@ -10,14 +11,16 @@ import {
 } from "firebase/database";
 import "../../../App.css";
 
-export default class Add_Pictures_to_album extends Component {
+export default class ViewAlbum extends Component {
     state = {
         categoryName: null,
         pictureDataArray: [], // Store picture data along with IDs
         loading: true,
+        refresh_screen: false,
     };
 
-    async componentDidMount() {
+    async refresh() {
+        this.setState({ refresh_screen: true });
         const { categoryName } = this.props;
 
         try {
@@ -36,6 +39,7 @@ export default class Add_Pictures_to_album extends Component {
         }
     }
 
+    // ============== fetch pics ==================//
     fetchPictures = async (categoryName) => {
         const db = getDatabase();
         const picturesRef = ref(db, "Pictures");
@@ -53,7 +57,7 @@ export default class Add_Pictures_to_album extends Component {
                         ...childSnapshot.val(),
                     };
 
-                    if (pictureData.category !== categoryName) {
+                    if (pictureData.category === categoryName) {
                         pictureDataArray.push(pictureData);
                     }
                 });
@@ -64,31 +68,11 @@ export default class Add_Pictures_to_album extends Component {
         }
     };
 
-    // ========================= update category =========================//
-    handlePictureClick = async (pictureData) => {
-        const { categoryName } = this.state;
-        const db = getDatabase();
-        const picturesRef = ref(db, "Pictures");
-        // console.log(pictureData.url);
-        try {
-            await set(ref(db, "Pictures/" + pictureData.id), {
-                category: this.state.categoryName,
-                url: pictureData.url,
-            });
-
-            // Fetch updated pictures after the category change
-            const pictureDataArray = await this.fetchPictures(categoryName);
-
-            this.setState({
-                pictureDataArray,
-            });
-        } catch (error) {
-            console.error("Error updating picture category:", error);
-        }
-    };
-
-    // ========================= render ================================//
     render() {
+        if (this.state.refresh_screen == false) {
+            this.refresh();
+        }
+        console.log("s");
         const { pictureDataArray, loading } = this.state;
 
         if (loading) {
@@ -98,22 +82,13 @@ export default class Add_Pictures_to_album extends Component {
         return (
             <div>
                 <center>
-                    <h3>Click Pictures to Add</h3>
                     <div className="img_div">
                         {pictureDataArray.map((pictureData) => (
-                            <button
-                                key={pictureData.id} // Use the unique ID as the key
-                                onClick={() =>
-                                    this.handlePictureClick(pictureData)
-                                }
-                                style={{ border: "none" }}
-                            >
-                                <img
-                                    className="img_view_modal"
-                                    src={pictureData.url}
-                                    alt={`Picture ${pictureData.id}`}
-                                />
-                            </button>
+                            <img
+                                className="img_view"
+                                src={pictureData.url}
+                                alt={`Picture ${pictureData.id}`}
+                            />
                         ))}
                     </div>
                 </center>

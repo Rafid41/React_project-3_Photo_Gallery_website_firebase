@@ -97,11 +97,6 @@ class Home extends Component {
             });
         });
     };
-    // update_pic_id(len) {
-    //     if (this.state.pic_id != len) {
-    //         this.setState({ pic_id: len });
-    //     }
-    // }
 
     render() {
         if (this.state.refresh_screen == false) {
@@ -115,17 +110,9 @@ class Home extends Component {
         const ListsOfImageList = new Set(imageList);
         // Convert the Set to an array and sort it
         const sortedImgArray = Array.from(ListsOfImageList);
-        // this.setState({ pic_ids: sortedImgArray.length });
-        // this.update_pic_id(sortedImgArray.length);
 
         return (
             <div className="App">
-                {/* <button onClick={this.refresh} className="btn btn-primary">
-                    Refresh Page
-                </button>
-                <hr />
-                <hr /> */}
-
                 <h2>All Pictures</h2>
                 <div className="img_div">
                     {sortedImgArray.map((url) => (
