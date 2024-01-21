@@ -82,7 +82,7 @@ export const auth = (username, email, password, mode) => (dispatch) => {
         const db = getDatabase();
         // seconds will be unique user ID
         var seconds = new Date().getTime();
-        console.log(seconds);
+        // console.log(seconds);
         set(ref(db, "Credentials/" + seconds), {
             email: email,
             username: username,

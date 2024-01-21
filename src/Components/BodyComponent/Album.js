@@ -60,6 +60,8 @@ class Album extends React.Component {
                         <br />
                         <CurrentAlbumLists />
                     </center>
+
+                    {/* upload button */}
                     <button
                         className="addNewAlbumButton"
                         active

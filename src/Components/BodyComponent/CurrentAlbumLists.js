@@ -48,7 +48,14 @@ export default CurrentAlbumLists;
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { Button } from "reactstrap";
+import EachAlbum from "./EachAlbum";
 import "../../App.css";
+import { Link } from "react-router-dom";
+
+// const onClickHandler = (categoryName) => {
+//     console.log("categoryname", categoryName);
+//     return <EachAlbum categoryName={categoryName} />;
+// };
 
 const CurrentAlbumLists = () => {
     const [dataList, setDataList] = useState([]);
@@ -77,9 +84,11 @@ const CurrentAlbumLists = () => {
         <div className="custom_container">
             <center>
                 {dataList.map((categoryName, index) => (
-                    <button key={index} className="album_list_btn">
-                        {categoryName}
-                    </button>
+                    <Link to={`/each-album/${categoryName}`} key={index}>
+                        <button className="album_list_btn">
+                            {categoryName}
+                        </button>
+                    </Link>
                 ))}
             </center>
         </div>

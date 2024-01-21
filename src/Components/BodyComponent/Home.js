@@ -20,7 +20,7 @@ class Home extends Component {
             imageUpload: null,
             imageList: new Set(),
             modalOpen: false,
-            pic_id: 0,
+            // pic_id: 0,
             refresh_screen: false,
         };
         this.imageListRef = ref(storage, "images/");
@@ -29,9 +29,12 @@ class Home extends Component {
     //======================== firebase =================//
     // post to firebase
     pictureUrlToFirebase(pic_Url) {
+        // seconds as unique id
+        var seconds = new Date().getTime();
         const db = getDatabase();
-        set(ref_data(db, "Picture_Urls/" + this.state.pic_id), {
+        set(ref_data(db, "Pictures/" + seconds), {
             url: pic_Url,
+            category: "",
         });
         this.setState({ ALert_album_added: true });
     }
@@ -94,11 +97,11 @@ class Home extends Component {
             });
         });
     };
-    update_pic_id(len) {
-        if (this.state.pic_id != len) {
-            this.setState({ pic_id: len });
-        }
-    }
+    // update_pic_id(len) {
+    //     if (this.state.pic_id != len) {
+    //         this.setState({ pic_id: len });
+    //     }
+    // }
 
     render() {
         if (this.state.refresh_screen == false) {
@@ -113,7 +116,7 @@ class Home extends Component {
         // Convert the Set to an array and sort it
         const sortedImgArray = Array.from(ListsOfImageList);
         // this.setState({ pic_ids: sortedImgArray.length });
-        this.update_pic_id(sortedImgArray.length);
+        // this.update_pic_id(sortedImgArray.length);
 
         return (
             <div className="App">

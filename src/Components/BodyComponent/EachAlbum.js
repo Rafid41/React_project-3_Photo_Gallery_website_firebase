@@ -1,9 +1,18 @@
 // src\Components\BodyComponent\EachAlbum.js
-import React, { Component } from "react";
+import React from "react";
+import { useParams } from "react-router-dom";
 
-export default class EachAlbum extends Component {
-    render() {
-        const { prop1, prop2 } = this.props;
-        return <div></div>;
-    }
-}
+const EachAlbum = () => {
+    const params = useParams();
+    const { categoryName } = params;
+
+    return (
+        <div>
+            <center>
+                <h2>Album: {categoryName}</h2>
+            </center>
+        </div>
+    );
+};
+
+export default EachAlbum;
