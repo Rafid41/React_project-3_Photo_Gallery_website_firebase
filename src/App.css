@@ -2,8 +2,16 @@
     text-align: center;
 }
 
-img {
+.img_view {
     margin: 10px;
+    width: 15rem;
+    height: 10rem;
+}
+
+.img_view_modal {
+    margin: 5px;
+    width: 10rem;
+    height: 6rem;
 }
 
 .img_div {

@@ -129,7 +129,12 @@ class Home extends Component {
                 <h2>All Pictures</h2>
                 <div className="img_div">
                     {sortedImgArray.map((url) => (
-                        <img key={url} src={url} alt="Uploaded" />
+                        <img
+                            className="img_view"
+                            key={url}
+                            src={url}
+                            alt="Uploaded"
+                        />
                     ))}
                 </div>
                 {/* ================= modal =================== */}
