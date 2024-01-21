@@ -68,6 +68,8 @@ export default class ViewAlbum extends Component {
         }
     };
 
+    // ============================ render ==============================//
+
     render() {
         if (this.state.refresh_screen == false) {
             this.refresh();

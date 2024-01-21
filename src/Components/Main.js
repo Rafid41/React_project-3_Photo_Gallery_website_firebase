@@ -9,6 +9,7 @@ import Logout from "./Auth/Logout";
 import Home from "./BodyComponent/Home";
 import Album from "./BodyComponent/Album";
 import EachAlbum from "./BodyComponent/EachAlbum";
+import Comments from "./BodyComponent/Comments/Comments";
 
 const mapStateToProps = (state) => {
     return {
@@ -52,6 +53,11 @@ class Main extends Component {
                     <Route
                         path="/each-album/:categoryName"
                         element={<EachAlbum />}
+                    />
+
+                    <Route
+                        path="/comments/:came_from/:picture_id"
+                        element={<Comments />}
                     />
                     {/* kono kisur sathe match na hole "/" */}
                     <Route path="*" element={<Navigate to="/" replace />} />

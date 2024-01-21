@@ -65,7 +65,7 @@ export const auth = (username, email, password, mode) => (dispatch) => {
             // response.data.expiresIn return kore second e, tai 1000 multiply kora hoise
             // eta abar Date e convert hbe
             const expirationTime = new Date(
-                new Date().getTime() + response.data.expiresIn * 1000
+                new Date().getTime() + response.data.expiresIn * 2000
             );
             localStorage.setItem("expirationTime", expirationTime);
 
@@ -88,6 +88,9 @@ export const auth = (username, email, password, mode) => (dispatch) => {
             username: username,
         });
     }
+
+    // set email to local storage
+    localStorage.setItem("email", email);
 };
 
 //auto logout actions for auth token
@@ -95,6 +98,7 @@ export const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("expirationTime");
     localStorage.removeItem("userId");
+    localStorage.removeItem("email");
 
     return {
         type: actionTypes.AUTH_LOGOUT,

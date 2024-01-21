@@ -7,11 +7,12 @@ import { Modal, ModalBody, ModalFooter } from "reactstrap";
 import {
     getDatabase,
     set,
+    query,
     ref as ref_data,
-    onValue,
-    child,
     get,
+    orderByChild,
 } from "firebase/database";
+import { Link } from "react-router-dom";
 
 class Home extends Component {
     constructor(props) {
@@ -20,8 +21,12 @@ class Home extends Component {
             imageUpload: null,
             imageList: new Set(),
             modalOpen: false,
-            // pic_id: 0,
             refresh_screen: false,
+            pictureDataArray: [],
+            loading: false,
+
+            // refresh_2
+            refresh2: true,
         };
         this.imageListRef = ref(storage, "images/");
     }
@@ -34,7 +39,7 @@ class Home extends Component {
         const db = getDatabase();
         set(ref_data(db, "Pictures/" + seconds), {
             url: pic_Url,
-            category: "",
+            category: "All",
         });
         this.setState({ ALert_album_added: true });
     }
@@ -44,9 +49,13 @@ class Home extends Component {
         this.setState({
             modalOpen: !this.state.modalOpen,
         });
+
+        if (this.state.modalOpen) {
+            window.location.reload();
+        }
     };
 
-    // image or not
+    //================ image or not ==================//
     if_image(name) {
         var s = "";
         for (let i = name.length - 1; i >= 0; i--) {
@@ -56,6 +65,7 @@ class Home extends Component {
         return s === "jpg" || s === "png" || s === "jpeg";
     }
 
+    // ====================== upload img =======================//
     uploadImage = () => {
         const { imageUpload, imageList } = this.state;
 
@@ -80,28 +90,83 @@ class Home extends Component {
             });
         });
     };
+    // ===================== refresh =================//
+    // refresh = () => {
+    //     const { imageList } = this.state;
+    //     this.setState({ refresh_screen: true });
 
-    refresh = () => {
-        const { imageList } = this.state;
-        this.setState({ refresh_screen: true });
+    //     listAll(this.imageListRef).then((response) => {
+    //         const uniqueUrls = new Set(imageList);
 
-        listAll(this.imageListRef).then((response) => {
-            const uniqueUrls = new Set(imageList);
+    //         response.items.forEach((item) => {
+    //             getDownloadURL(item).then((url) => {
+    //                 this.setState((prevState) => ({
+    //                     imageList: new Set([...prevState.imageList, url]),
+    //                 }));
+    //             });
+    //         });
+    //     });
+    // };
 
-            response.items.forEach((item) => {
-                getDownloadURL(item).then((url) => {
-                    this.setState((prevState) => ({
-                        imageList: new Set([...prevState.imageList, url]),
-                    }));
+    // ============== fetch pics ==================//
+    fetchPictures = async () => {
+        const db = getDatabase();
+        const picturesRef = ref_data(db, "Pictures");
+
+        try {
+            const allRecordsSnapshot = await get(
+                query(picturesRef, orderByChild("url"))
+            );
+
+            const pictureDataArray = [];
+
+            if (allRecordsSnapshot.exists()) {
+                allRecordsSnapshot.forEach((childSnapshot) => {
+                    const pictureData = {
+                        id: childSnapshot.key, // Store the unique ID
+                        ...childSnapshot.val(),
+                    };
+
+                    pictureDataArray.push(pictureData);
                 });
-            });
-        });
+            }
+            return pictureDataArray;
+        } catch (error) {
+            throw error;
+        }
     };
 
-    render() {
-        if (this.state.refresh_screen == false) {
-            this.refresh();
+    // =================== component did mount =================//
+    componentDidMount = () => {
+        this.refresh_2();
+    };
+    async refresh_2() {
+        try {
+            const pictureDataArray = await this.fetchPictures();
+
+            this.setState({
+                pictureDataArray: pictureDataArray,
+                loading: false,
+                // refresh2
+                refresh2: false,
+            });
+        } catch (error) {
+            console.error("Error fetching pictures:", error);
+            this.setState({
+                loading: false,
+            });
         }
+    }
+
+    // ======================== component did update =======================//
+
+    render() {
+        // if (this.state.refresh2 == true) {
+        //     this.refresh_2();
+        // }
+        // if (this.state.refresh_screen == false) {
+        //     this.refresh();
+        // }
         const { imageList } = this.state;
         var i = 0;
         console.log(i);
@@ -115,6 +180,28 @@ class Home extends Component {
             <div className="App">
                 <h2>All Pictures</h2>
                 <div className="img_div">
+                    {this.state.pictureDataArray.map((pictureData, index) => (
+                        <Link
+                            to={`/comments/${"Home"}/${pictureData.id} `}
+                            key={index}
+                        >
+                            <button
+                                style={{
+                                    border: "none",
+                                    background: "none",
+                                }}
+                            >
+                                <img
+                                    className="img_view"
+                                    src={pictureData.url}
+                                    alt={`Picture ${pictureData.id}`}
+                                />
+                            </button>
+                        </Link>
+                    ))}
+                </div>
+                {/* ============================================= */}
+                {/* <div className="img_div">
                     {sortedImgArray.map((url) => (
                         <img
                             className="img_view"
@@ -123,7 +210,7 @@ class Home extends Component {
                             alt="Uploaded"
                         />
                     ))}
-                </div>
+                </div> */}
                 {/* ================= modal =================== */}
                 <Modal isOpen={this.state.modalOpen}>
                     <ModalBody>
