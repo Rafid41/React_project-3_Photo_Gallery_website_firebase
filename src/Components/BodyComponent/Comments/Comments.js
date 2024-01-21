@@ -1,8 +1,47 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getDatabase, ref, onValue } from "firebase/database";
+import {
+    getDatabase,
+    ref,
+    onValue,
+    query,
+    equalTo,
+    get,
+    orderByChild,
+} from "firebase/database";
+
+//=========================== fetching username =========================//
+async function fetchUN(categoryName) {
+    const db = getDatabase();
+    const picturesRef = ref(db, "Credentials");
+
+    try {
+        const allRecordsSnapshot = await get(
+            query(picturesRef, orderByChild("email"))
+        );
+
+        let username = null;
+        if (allRecordsSnapshot.exists()) {
+            allRecordsSnapshot.forEach((childSnapshot) => {
+                const pictureData = {
+                    id: childSnapshot.key, // Store the unique ID
+                    ...childSnapshot.val(),
+                };
+
+                if (pictureData.email === categoryName) {
+                    username = pictureData.username;
+                    return username;
+                }
+            });
+        }
+        return username;
+    } catch (error) {
+        throw error;
+    }
+}
 
 const Comments = () => {
+    const [userName, setUserName] = useState(null);
     const [pic, setPic] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -41,6 +80,15 @@ const Comments = () => {
     // =========================== get auth email from local storage ==========================//
 
     const email = localStorage.getItem("email");
+    fetchUN(email)
+        .then((username) => {
+            setUserName(username);
+        })
+        .catch((error) => {
+            console.error("Error fetching username:", error);
+        });
+
+    // console.log(userName);
 
     // =============================== return =================================//
     return (
