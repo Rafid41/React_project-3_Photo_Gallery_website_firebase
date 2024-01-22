@@ -185,18 +185,11 @@ class Home extends Component {
                             to={`/comments/${"Home"}/${pictureData.id} `}
                             key={index}
                         >
-                            <button
-                                style={{
-                                    border: "none",
-                                    background: "none",
-                                }}
-                            >
-                                <img
-                                    className="img_view"
-                                    src={pictureData.url}
-                                    alt={`Picture ${pictureData.id}`}
-                                />
-                            </button>
+                            <img
+                                className="img_view"
+                                src={pictureData.url}
+                                alt={`Picture ${pictureData.id}`}
+                            />
                         </Link>
                     ))}
                 </div>

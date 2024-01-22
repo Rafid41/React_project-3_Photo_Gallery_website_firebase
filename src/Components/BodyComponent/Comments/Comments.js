@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import LoadAndWriteComments from "./LoadAndWriteComments";
 import {
     getDatabase,
     ref,
@@ -11,25 +12,23 @@ import {
 } from "firebase/database";
 
 //=========================== fetching username =========================//
-async function fetchUN(categoryName) {
+async function fetchUN(user_name) {
     const db = getDatabase();
-    const picturesRef = ref(db, "Credentials");
+    const Ref = ref(db, "Credentials");
 
     try {
-        const allRecordsSnapshot = await get(
-            query(picturesRef, orderByChild("email"))
-        );
+        const allRecordsSnapshot = await get(query(Ref, orderByChild("email")));
 
         let username = null;
         if (allRecordsSnapshot.exists()) {
             allRecordsSnapshot.forEach((childSnapshot) => {
-                const pictureData = {
+                const usernameData = {
                     id: childSnapshot.key, // Store the unique ID
                     ...childSnapshot.val(),
                 };
 
-                if (pictureData.email === categoryName) {
-                    username = pictureData.username;
+                if (usernameData.email === user_name) {
+                    username = usernameData.username;
                     return username;
                 }
             });
@@ -39,6 +38,8 @@ async function fetchUN(categoryName) {
         throw error;
     }
 }
+
+// ======================== main comment fn ===========================//
 
 const Comments = () => {
     const [userName, setUserName] = useState(null);
@@ -118,7 +119,9 @@ const Comments = () => {
             <br />
             <center>
                 <h2>Comments:</h2>
+                <br />
             </center>
+            <LoadAndWriteComments picture_id={picture_id} username={userName} />
         </div>
     );
 };

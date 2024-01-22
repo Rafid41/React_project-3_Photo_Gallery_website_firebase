@@ -1,5 +1,6 @@
 // src\Components\BodyComponent\EachAlbum_Subfolders\ViewAlbum.js
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import {
     getDatabase,
     ref,
@@ -74,7 +75,7 @@ export default class ViewAlbum extends Component {
         if (this.state.refresh_screen == false) {
             this.refresh();
         }
-        console.log("s");
+        // console.log("s");
         const { pictureDataArray, loading } = this.state;
 
         if (loading) {
@@ -85,12 +86,17 @@ export default class ViewAlbum extends Component {
             <div>
                 <center>
                     <div className="img_div">
-                        {pictureDataArray.map((pictureData) => (
-                            <img
-                                className="img_view"
-                                src={pictureData.url}
-                                alt={`Picture ${pictureData.id}`}
-                            />
+                        {pictureDataArray.map((pictureData, index) => (
+                            <Link
+                                to={`/comments/${this.state.categoryName}/${pictureData.id} `}
+                                key={index}
+                            >
+                                <img
+                                    className="img_view"
+                                    src={pictureData.url}
+                                    alt={`Picture ${pictureData.id}`}
+                                />
+                            </Link>
                         ))}
                     </div>
                 </center>

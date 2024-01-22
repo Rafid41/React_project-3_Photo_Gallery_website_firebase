@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
 class Auth extends Component {
     //same form for login and sign up
     state = {
-        mode: "Sign Up",
+        mode: "Login",
     };
 
     switchModeHandler = () => {
