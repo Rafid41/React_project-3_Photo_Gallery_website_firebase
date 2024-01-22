@@ -23,6 +23,12 @@ const EachAlbum = () => {
             {/* ========== modal ============= */}
             <Modal isOpen={modalOpen}>
                 <ModalBody>
+                    <p style={{ color: "red" }}>
+                        <strong>
+                            Note: After adding image, You'll have to refresh the
+                            Album Page to view Changes
+                        </strong>
+                    </p>
                     <Add_Pictures_to_album categoryName={categoryName} />
                 </ModalBody>
 
