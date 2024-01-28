@@ -12,7 +12,7 @@ import {
 } from "firebase/database";
 
 //=========================== fetching username =========================//
-async function fetchUN(user_name) {
+async function fetchUN(email) {
     const db = getDatabase();
     const Ref = ref(db, "Credentials");
 
@@ -27,7 +27,7 @@ async function fetchUN(user_name) {
                     ...childSnapshot.val(),
                 };
 
-                if (usernameData.email === user_name) {
+                if (usernameData.email === email) {
                     username = usernameData.username;
                     return username;
                 }
